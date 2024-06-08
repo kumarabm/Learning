@@ -1,0 +1,219 @@
+
+
+1. $match: Filters documents to pass only those that match a specified condition.
+
+  Example Input Documents:
+
+{ "_id": 1, "name": "John", "age": 30, "status": "A" }
+{ "_id": 2, "name": "Jane", "age": 25, "status": "B" }
+{ "_id": 3, "name": "Alice", "age": 35, "status": "A" }
+
+Aggregation Pipeline:  { $match: { status: "A" } }
+
+Output:
+{ "_id": 1, "name": "John", "age": 30, "status": "A" }
+{ "_id": 3, "name": "Alice", "age": 35, "status": "A" }
+
+2. $group: Groups documents by a specified expression and applies accumulator expressions to each group.
+
+{ "_id": "Department A", "amount": 100 }
+{ "_id": "Department B", "amount": 200 }
+{ "_id": "Department A", "amount": 150 }
+
+Aggregation Pipeline:   { $group: { _id: "$_id", total: { $sum: "$amount" } } }
+
+Output:
+{ "_id": "Department A", "total": 250 }
+{ "_id": "Department B", "total": 200 }
+
+3. $project: Reshapes documents, including the addition, removal, or renaming of fields.
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+
+Aggregation Pipeline:  { $project: { name: 1, age: 1, _id: 0 } }
+
+Output:
+{ "name": "John", "age": 30 }
+{ "name": "Jane", "age": 25 }
+
+4.  $sort: Orders the documents based on a specified sort key.
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+
+Aggregation Pipeline:    { $sort: { age: -1 } }
+
+Output:
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+
+5. $unwind: Deconstructs an array field from the input documents to output a document for each element.
+
+{ "_id": 1, "tags": ["science", "math", "history"] }
+{ "_id": 2, "tags": ["art", "music"] }
+
+Aggregation Pipeline:  { $unwind: "$tags" }
+
+Output:
+
+{ "_id": 1, "tags": "science" }
+{ "_id": 1, "tags": "math" }
+{ "_id": 1, "tags": "history" }
+{ "_id": 2, "tags": "art" }
+{ "_id": 2, "tags": "music" }
+
+6. $lookup: Performs a left outer join to another collection in the same database.
+
+Example Input Documents:
+
+// Collection: orders
+{ "_id": 1, "item": "apple", "quantity": 5 }
+{ "_id": 2, "item": "banana", "quantity": 10 }
+
+// Collection: products
+{ "_id": 1, "name": "apple", "price": 1.2 }
+{ "_id": 2, "name": "banana", "price": 0.5 }
+
+Aggregation Pipeline:  {
+  $lookup: {
+    from: "products",
+    localField: "item",
+    foreignField: "name",
+    as: "product_details"
+  }
+}
+Output:
+
+{ "_id": 1, "item": "apple", "quantity": 5, "product_details": [{ "_id": 1, "name": "apple", "price": 1.2 }] }
+{ "_id": 2, "item": "banana", "quantity": 10, "product_details": [{ "_id": 2, "name": "banana", "price": 0.5 }] }
+
+7.  $group stages: Various stages like $sum, $avg, $min, $max, etc., within the $group stage to perform operations on grouped data.
+
+Example Input Documents:
+{ "_id": "Department A", "amount": 100 }
+{ "_id": "Department B", "amount": 200 }
+{ "_id": "Department A", "amount": 150 }
+
+Aggregation Pipeline: { $group: { _id: "$_id", total: { $sum: "$amount" } } }
+
+Output:
+
+{ "_id": "Department A", "total": 250 }
+{ "_id": "Department B", "total": 200 }
+
+8. $limit: Limits the number of documents passed to the next stage.
+
+Example Input Documents:
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+{ "_id": 3, "name": "Alice", "age": 35 }
+
+Aggregation Pipeline: { $limit: 2 }
+
+Output:
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+
+9. $skip: Skips a specified number of documents and passes the remaining documents to the next stage.
+
+Example Input Documents:
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+{ "_id": 3, "name": "Alice", "age": 35 }
+ 
+Aggregation Pipeline:  { $skip: 1 }
+
+Output: 
+
+{ "_id": 2, "name": "Jane", "age": 25 }
+{ "_id": 3, "name": "Alice", "age": 35 }
+
+10. $facet: Allows for multiple pipelines to be executed within a single aggregation stage.
+
+Example Input Documents: 
+
+{ "_id": 1, "amount": 100 }
+{ "_id": 2, "amount": 200 }
+
+Aggregation Pipeline:  {
+  $facet: {
+    totalAmount: [ { $group: { _id: null, total: { $sum: "$amount" } } } ]
+  }
+}
+
+Output:
+
+{
+  "totalAmount": [
+    { "_id": null, "total": 300 }
+  ]
+}
+
+
+
+11.  $addFields: Adds new fields to documents. This stage is similar to $project, but it adds new fields while retaining the existing ones.
+
+Example Input Documents:
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+
+Aggregation Pipeline:
+
+{ $addFields: { fullName: { $concat: ["$name", " Doe"] } } }
+Output:
+
+{ "_id": 1, "name": "John", "age": 30, "fullName": "John Doe" }
+{ "_id": 2, "name": "Jane", "age": 25, "fullName": "Jane Doe" }
+
+
+12.  $out: Writes the resulting documents of the aggregation pipeline to a specified collection. This stage must be the last stage in the pipeline.
+
+Example Input Documents:
+
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+
+Aggregation Pipeline:    { $out: "output_collection" }
+
+Output:
+The resulting documents of the aggregation pipeline are written to the "output_collection" collection.
+
+13. $redact: Restricts the content for each document based on information stored in the document itself.
+
+Example Input Documents:
+{
+  "_id": 1,
+  "name": "John",
+  "age": 30,
+  "level": "restricted",
+  "sensitiveInfo": "confidential"
+}
+Aggregation Pipeline:
+{
+  $redact: {
+    $cond: {
+      if: { $eq: ["$level", "restricted"] },
+      then: "$$PRUNE",
+      else: "$$DESCEND"
+    }
+  }
+}
+Output:
+If the "level" field is "restricted", the output document will only contain the "_id", "name", and "age" fields. If the "level" field is not "restricted", the entire document is retained.
+
+14.  $replaceRoot: Replaces the input document with the specified document. The specified document can be a new document or an existing document from the input.
+
+Example Input Documents:
+{ "_id": 1, "name": "John", "age": 30 }
+{ "_id": 2, "name": "Jane", "age": 25 }
+Aggregation Pipeline:
+{ $replaceRoot: { newRoot: { name: "$name", age: "$age" } } }
+Output:
+{ "name": "John", "age": 30 }
+{ "name": "Jane", "age": 25 }

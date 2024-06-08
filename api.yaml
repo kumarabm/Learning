@@ -1,0 +1,174 @@
+swagger: "2.0"
+info:
+  title: learning API
+  description: Learning API
+  version: 1.0.1
+  basePath: "/learning"
+  contact:
+    email: kumaravel.muralidharan@sifycorp.com
+    name: Kumaravel BM
+  servers:
+    -url: "http://localhost:3000"
+    description: This is Development Server
+
+schemes: [http, https]
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+#add user
+paths:
+  /adduser:
+    post:
+      tags:
+        - API
+      summary: add user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: adduser
+          schema:
+            type: object
+            properties:
+              CompanyName:
+                type: string
+                example: "HDFC BANK"
+              PanNo:
+                type: string
+                example: "LOOPK2024A"
+              City:
+                type: string
+                example: "Chennai"
+              State:
+                type: string
+                example: "Tamil Nadu"
+              Country:
+                type: string
+                example: "India"
+      responses:
+        201:
+          description: Success
+
+
+#remove user
+
+  /deleteuser/{userId}:
+    delete:
+      tags:
+        - API
+      summary: remove user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: ObjectId
+            properties:
+              userId:
+                type: ObjectId
+                example: 655608b6bd068d842b070b8a
+              
+      responses:
+        201:
+          description: Success
+
+
+#update user
+
+  /updateuser:
+    put:
+      tags:
+        - API
+      summary: update user
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: updateuser
+          schema:
+            type: ObjectId
+            properties:
+              userId:
+                type: ObjectId
+                example: 6644791cee8a14c85649a9bf
+              CompanyName:
+                type: string
+                example: "HDFC BANK"
+              PanNo:
+                type: string
+                example: "LOOPK2024A"
+              City:
+                type: string
+                example: "Chennai"
+              State:
+                type: string
+                example: "Tamil Nadu"
+              Country:
+                type: string
+                example: "India"  
+              
+      responses:
+        201:
+          description: Success
+
+
+#getuser_details
+
+  /getusers/{userId}:
+    get:
+      tags:
+        - API
+      summary: getuser_details
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: ObjectId
+            properties:
+              userId:
+                type: ObjectId
+                example: 655608b6bd068d842b070b8a
+              
+      responses:
+        201:
+          description: Success
+
+#getall user_details
+
+  /getusers:
+    get:
+      tags:
+        - API
+      summary: getAlluser_details
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: ObjectId
+            properties:
+              userId:
+                type: ObjectId
+                example: 655608b6bd068d842b070b8a
+              
+      responses:
+        201:
+          description: Success
